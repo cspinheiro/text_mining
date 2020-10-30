@@ -1,0 +1,85 @@
+install.packages("rtweet")
+install.packages("wordcloud")
+install.packages("tm")
+install.packages("fpc")
+install.packages("cluster")
+
+library(rtweet)
+library(wordcloud)
+library(tm)
+library(fpc)
+library(ggplot2)
+library(cluster)
+
+bolsonaro <- search_tweets("bolsonaro", n = 15000, 
+                           include_rts = FALSE,
+                           lang = "pt")
+
+bolsonaro_texto <- bolsonaro$text
+
+View(bolsonaro_texto)
+
+### Para quem não conseguiu a API ##
+bolsonaro_texto <- read.csv("bolsonaro_twitter.csv")
+
+# Corpus
+
+corpus <- VCorpus(VectorSource(bolsonaro_texto))
+corpus <- tm_map(corpus, content_transformer(tolower))
+corpus <- tm_map(corpus, removePunctuation)
+corpus <- tm_map(corpus, removeWords, c("que", "de", "para"))
+
+# Visualizações
+wordcloud(corpus, min.freq=20, max=100)
+formatacao <- brewer.pal(8, "Dark2")
+wordcloud(corpus, min.freq=20, max=100, random.order=TRUE,
+          colors=formatacao)
+
+# Matriz
+corpus_dtm <- DocumentTermMatrix(corpus)
+corpus_dtm
+
+corpus_frequencia <- colSums(as.matrix(corpus_dtm))
+length(corpus_frequencia)
+
+# Visualizações Gráficas
+corpus_plot <- data.frame(word=names(corpus_frequencia),
+                                    freq=corpus_frequencia)
+
+grafico <- ggplot(subset(corpus_plot, corpus_frequencia>30),
+                  aes(x = reorder(word, -freq),
+                      y = freq)) +
+                  geom_bar(stat = "identify") +
+                  theme(axis.text.x= element_text(angle=45, hjust=1)) +
+                  ggtitle("Gráfico com os temos mais frequentes") +
+                  labs(y="Frequencia", x = "Termos")
+grafico  
+
+grafico <- ggplot(subset(corpus_plot, corpus_frequencia>30), aes(x = reorder(word, -freq), y = freq)) +
+  geom_bar(stat = "identity") + 
+  theme(axis.text.x=element_text(angle=45, hjust=1)) +
+  ggtitle("Grafico de barras com os termos mais frequentes") +
+  labs(y="Frequencia", x = "Termos")
+
+grafico   
+
+#####
+#Aplicando um pouco de machine learning - Clustering
+corpus_dtms <- removeSparseTerms(corpus_dtm, 0.95)
+corpus_dtms
+
+#Clustering 1 - Dendograma
+distancia <- dist(t(corpus_dtms), method="euclidian")   
+dendograma <- hclust(d=distancia, method="complete")
+plot(dendograma, hang=-1,main = "Dendograma Tweets Bolsonaro",
+     xlab = "Distancia",
+     ylab = "Altura")  
+
+#Clustering 2 - K-Means
+kmeans_btc <- kmeans(distancia, 5)   
+clusplot(as.matrix(distancia), kmeans_btc$cluster, color=T, shade=T, labels=3, lines=0,
+         main = "K-Means Tweets Bolsonaro",
+         xlab = "PC1",
+         ylab = "PC2") 
+
+  
