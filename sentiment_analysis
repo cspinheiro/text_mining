@@ -1,0 +1,100 @@
+
+install.packages("pander")
+install.packages("syuzhet")
+
+library(pander)
+library(syuzhet) 
+
+
+meu_texto <- c("Jair Bolsonaro gives speech at the inauguration of a plant in Mato Grosso
+Tribute from Agribusiness to President Jair Bolsonaro
+President Jair Bolsonaro participates in the delivery of rural property titles
+LIVE! Bolsonaro is honored and Governor is booed during speech in Mato Grosso - Agronegócio
+LIVE! Live with President Jair Bolsonaro
+Live of the week with President Jair Bolsonaro - 17/09/2020
+President Jair Bolsonaro inaugurates Photovoltaic Plant in Paraíba
+Bolsonaro receives the support of the people of Mato Grosso and makes special thanks to the agribusiness
+In Paraíba, people take to the streets to welcome President Jair Bolsonaro
+Bolsonaro is received as a 'myth' by agribusiness in Mato Grosso
+Bolsonaro plays pool in a bar in Ceará, does not wear a mask and generates agglomeration
+President Jair Bolsonaro makes a beautiful speech in Paraíba and opens Photovoltaic Plant
+LIVE: PRESIDENT JAIR BOLSONARO SPEAKS IN THE NORTHEAST - OPENING OF A PLANT
+Bolsonaro appeals, Government zeroes tax, Elections 2020, Roberto Carlos worried, Ratinho and more!
+Zé Maria talks about Bolsonaro's nominations to the Supreme Court
+Marco Aurélio annuls Celso's order on Bolsonaro's testimony
+LIVE! PRESIDENT 4 X 300 LIVE AID | BOLSONARO SPEAKS OF THE CALENDAR AND NEW VALUE
+Full of the live of Jair Bolsonaro of 17/09/20
+LIVE: PRESIDENT JAIR BOLSONARO IS PRONOUNCED BY OPENING A PHOTOVOLTAIC PLANT IN PARAÍBA
+Bolsonaro endorses the resumption of discussions on Renda Brasil
+Bolsonaro arrives in Sorriso (MT) to the shouts of & quot
+Bolsonaro makes strong speech when inaugurating Health Minister Eduardo Pazuello
+Bolsonaro stopped the city of Coremas Paraíba on this 17/09/2020
+Coremas - Paraíba (17/09/20) - PR Jair Bolsonaro
+Bolsonaro asks back to school and criticizes teachers union
+Bolsonaro: Brazil is the country that most preserves the environment
+Bolsonaro withdraws from Renda Brasil and will keep Bolsa Família
+Boni talks about clashes between Jair Bolsonaro and Rede Globo
+Bolsonaro arrives in the Northeast and is greeted by the crowd shouting 'myth'
+Bolsonaro talks about being President, Animal Law, Argentina, Guedes, Travel, Jobs and more
+Next to a child, Jair Bolsonaro makes jokes about fat and misogyny
+BOLSONARO'S HEAD
+President Bolsonaro in Sorriso MT
+Boni talks about clashes between Jair Bolsonaro and Rede Globo
+AGU appeals to Bolsonaro's face-to-face testimony
+Bolsonaro visits the municipality of Missão Velha, in Ceará
+Bolsonaro arriving in Barreiras, Bahia, 11 / SEP / 2020
+LIVE: PRESIDENT JAIR BOLSONARO IS HONORED BY FARMERS AND SPONSORS
+Statement by President Jair Bolsonaro
+Church exemption: Jair Bolsonaro vetoes measure
+President Jair Bolsonaro visits railroad works in Bahia
+Bolsonaro laughs about burning in the Pantanal <U + 2600>
+PF interference: Jair Bolsonaro is summoned to give testimony
+President Jair Bolsonaro participates in the inauguration of the new president of the STF
+Bolsonaro makes unexpected visit to STF in Toffoli's farewell
+Collor talks about corruption and the rupture of Moro and Bolsonaro: Moro shouldn't get involved in politics
+President Bolsonaro visits railroad in Bahia
+Bolsonaro x STF Ministers: the president's visit to the supreme
+Bolsonaro vetoes part of text that forgives church debts | SBT Brazil (09/14/20)
+CONTROVERSY! Bolsonaro's slashed head is art or hate on the left?
+President Jair Bolsonaro makes statement to the press
+Bolsonaro takes stock of the pandemic
+URGENT: Bolsonaro gets emotional and cries during ceremony: ‘Something happens in our homeland’
+President Jair Bolsonaro criticizes economic team
+Eduardo Bolsonaro brings more information in conversation with the Minister of the Environment, Ricardo Salles
+STF: Marco Aurélio asks Bolsonaro to seek to correct inequalities and extols Constitution
+Thomas Traumann: Bolsonaro's ‘liberated general’ for churches
+& quot
+BOLSONARO: PROHIBITED TO TALK ABOUT BRAZILIAN INCOME | WE WILL NOT FREEZE RETIREMENTS AND PENSIONS
+President Bolsonaro fulfills agenda in Paraíba
+Bolsonaro vetoes part of pardoning church tax debts
+Reinaldo Azevedo: Bolsonaro, who would say ?, was left of part of the press
+Reinaldo Azevedo: Bolsonaro's live proves that every puritan is a pervert
+Bolsonaro explains partial veto and suggests PEC on tax immunity of churches
+Bolsonaro receives Salles, and government recognizes emergency situation in the Pantanal
+Bolsonaro raises dwarf and supporter questions: & quot
+Bolsonaro makes ‘surprise’ at the STF and brings a reminder to ministers: ‘I came here by vote’
+TODAY! GUEDES AND BOLSONARO: EMERGENCY AID 600 [EXTENDED CONFIRMED]
+Toffoli's farewell and Bolsonaro's political nod to the Supreme Court | #AlexandreGarcia
+Joel: “Jair Bolsonaro managed to DAMAGE Globo's image”
+Commentators analyze Jair Bolsonaro's live from 9/10/20
+Bolsonaro announces three more installments of emergency aid
+Statement by the President of the Republic, Jair Bolsonaro
+Tite & quot
+Barroso says Bolsonaro defends dictatorship
+Bolsonaro gives up on Brazil Income: & quot
+President Jair Bolsonaro makes statement")
+
+sentimento <- get_nrc_sentiment(meu_texto)
+
+barplot(colSums(sentimento),las = 2, ylab = "Palavras",main = "Análise de Sentimentos")
+
+sentimento$anger
+
+pander::pandoc.table(sentimento[1:6])
+
+barplot(sort(colSums(prop.table(sentimento[, 1:10]))),
+        horiz = TRUE,
+        cex.names = 0.7,
+        las = 1,
+        main = "Emoções no Texto Analisado",
+        xlab="%")
