@@ -1,0 +1,43 @@
+install.packages("tm")
+
+library(tm) #NLP
+library(dplyr) #manipulação de texto
+library(wordcloud)  #nuvem de palavras
+library(SnowballC)
+
+
+# Atribuindo o arquivo "tabela_uol.csv" ao objeto "words"
+# Verificar na pasta "web-scraping" como baixar notícias do UOL
+words <- read.csv("tabela_uol.csv")
+
+# O arquivo será convertido num vetor de caracteres para mineração de texto
+str(words)
+words <- as.character(words)
+
+# Transformando em corpus
+word.corpus <- Corpus(VectorSource(words))  #Corpus
+
+# Limpando o corpus
+word.corpus<-word.corpus%>%
+  tm_map(removePunctuation)%>% ##eliminar pontuacao
+  tm_map(removeNumbers)%>% #sem numeros
+  tm_map(stripWhitespace)# sem espacos
+
+# Removendo stopwords
+word.corpus<-word.corpus%>%
+  tm_map(tolower)%>% ##make all words lowercase
+  tm_map(removeWords, stopwords("por"))
+
+# Retirando derivações da mesma palavra
+word.corpus <- tm_map(word.corpus, stemDocument)
+
+# Frequencia dos termos 
+word.counts <- as.matrix(TermDocumentMatrix(word.corpus))
+word.freq <- sort(rowSums(word.counts), decreasing = TRUE)
+word.freq
+
+# Criando e plotndo a nuvem de palavras
+wordcloud(words = names(word.freq), 
+          freq = word.freq, 
+          scale = c(2, 0.2), max.words = 15, 
+          random.order = TRUE)
